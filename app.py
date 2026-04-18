@@ -83,32 +83,34 @@ st.set_page_config(
     layout="centered"
 )
 
-# ── Step 1: Google OAuth & Whitelist Security ─────────────────
+# ── Step 1: Google OAuth — connect the user's Sheets account ─────────────────
 
 st.title("🤖 MigrationBot")
 st.caption("S/4HANA WRICEF Migration Tracker · powered by DeepSeek")
 
-# 1. Check if logged in. If not, show login button and stop.
+# st.login() / st.user is available in Streamlit ≥ 1.35
 if not st.user.is_logged_in:
-    st.info("🔒 Connect your Google account to read and update the migration tracker.")
+    st.info("Connect your Google account to read and update the migration tracker.")
     if st.button("🔑 Connect Google Account"):
         st.login()
     st.stop()   # Don't render anything else until logged in
 
-# 2. Extract user email and check against the allowed list in secrets.toml
-user_email = st.user.email
-
-# (Make sure you added the [access] block to your secrets.toml!)
-allowed_emails = st.secrets["access"]["allowed_emails"] 
-
-if user_email not in allowed_emails:
-    st.error(f"❌ Access Denied. The account **{user_email}** is not authorized.")
-    if st.button("Sign Out"):
+# Show who's connected, with a disconnect option in the sidebar
+with st.sidebar:
+    st.markdown(f"**Connected as:**  \n{st.user.email}")
+    if st.button("Disconnect"):
         st.logout()
-    st.stop() # Halts execution completely, protecting the app
 
-# 3. Extract the token (we know they are safely logged in and authorized now)
-access_token = st.user.tokens["access"]
+# Retrieve the access token Streamlit obtained during the OAuth flow.
+# expose_tokens = ["access"] in secrets.toml makes this available.
+# 1. First, check if the user is actually logged in to prevent crashes
+if st.user.is_logged_in:
+    # 2. Access the token through the 'tokens' dictionary
+    access_token = st.user.tokens["access"]
+else:
+    st.warning("Please log in to continue.")
+    st.stop() # Halts the script until the user logs in
+
 # ── Step 2: Initialise session state ────────────────────────────────────────
 
 if "messages" not in st.session_state:
