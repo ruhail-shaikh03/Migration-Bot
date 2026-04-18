@@ -336,13 +336,13 @@ st.caption("S/4HANA WRICEF Migration Tracker · powered by DeepSeek")
 # ── Welcome screen (shown only before the first message) ─────────────────────
 
 EXAMPLE_PROMPTS = [
-    "What's the dev status of SD-045?",
-    "Set FI-012 status to Ready for Dev",
+    "What's the dev status of MM-001?",
+    "Set IM-001 status to Ready for Dev",
     "Show me all MM objects with no dev status",
-    "Highlight PM-023 red",
+    "Highlight MM-005 red",
     "How many items are in each dev status?",
-    "Which SD items are past their go-live date?",
-    "Mark SD-010 and SD-011 as migrated",
+    "Which MM items are past their go-live date?",
+    "Mark MM-001 and MM-002 as migrated",
     "What's our completion rate for Migrate? = Yes?",
 ]
 
